@@ -3,4 +3,4 @@
 /.idea
 ngrok.exe
 Vagrantfile
-/api/secrets.txt
+/api/secrets.env
