@@ -1,0 +1,6 @@
+*.pyc
+/.vagrant
+/.idea
+ngrok.exe
+Vagrantfile
+/api/secrets.txt
