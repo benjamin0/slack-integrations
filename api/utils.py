@@ -1,6 +1,6 @@
 from apiclient.discovery import build
-
 from consts import *
+
 
 def getYoutubeVideoViewCount():
     youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
@@ -24,4 +24,19 @@ def getYoutubeVideoViewCount():
     text = '%s views for %s' % (video_response['items'][0]['statistics']['viewCount'],
                                 video_response['items'][0]['snippet']['title'])
 
+    return text
+
+
+def getYoutubeChannelSubCount():
+    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
+                    developerKey=DEVELOPER_KEY)
+
+    channel_response = youtube.channels().list(
+        part="id,snippet,statistics",
+        id=CHANNEL_ID,
+        maxResults=1,
+    ).execute()
+
+    text = '%s subscribers for %s' % (channel_response['items'][0]['statistics']['subscriberCount'],
+                                      channel_response['items'][0]['snippet']['title'])
     return text
