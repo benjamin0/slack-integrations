@@ -27,7 +27,7 @@ def viewCount(**kwargs):
         maxResults=1,
     ).execute()
 
-    latestVideoId = search_response['items'][-1]['id']['videoId']
+    latestVideoId = search_response['items'][0]['id']['videoId']
 
     video_response = youtube.videos().list(
         part="statistics",
@@ -36,7 +36,6 @@ def viewCount(**kwargs):
 
     text = '%s views' % video_response['items'][0]['statistics']['viewCount']
     return slack.response(text)
-
 
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0')
