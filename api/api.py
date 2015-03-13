@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_slack import Slack
-from consts import *
+from settings import *
 from utils import getYoutubeVideoViewCount, \
     getYoutubeChannelSubCount, getYoutubeChannelTotalViews, getFacebookPageLikes
 

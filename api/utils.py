@@ -1,6 +1,6 @@
 import facebook
 from apiclient.discovery import build
-from consts import *
+from settings import *
 
 
 def getYoutubeVideoViewCount():
