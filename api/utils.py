@@ -2,11 +2,20 @@ import facebook
 from apiclient.discovery import build
 from settings import *
 
+youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
+                developerKey=YOUTUBE_DEVELOPER_KEY)
+
+
+def getYoutubeChannel():
+    channel_response = youtube.channels().list(
+        part="id,snippet,statistics",
+        id=YOUTUBE_CHANNEL_ID,
+        maxResults=1,
+    ).execute()
+    return channel_response
+
 
 def getYoutubeVideoViewCount():
-    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-                    developerKey=YOUTUBE_DEVELOPER_KEY)
-
     search_response = youtube.search().list(
         part="id,snippet",
         type='video',
@@ -29,30 +38,14 @@ def getYoutubeVideoViewCount():
 
 
 def getYoutubeChannelSubCount():
-    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-                    developerKey=YOUTUBE_DEVELOPER_KEY)
-
-    channel_response = youtube.channels().list(
-        part="id,snippet,statistics",
-        id=YOUTUBE_CHANNEL_ID,
-        maxResults=1,
-    ).execute()
-
+    channel_response = getYoutubeChannel()
     text = '%s subscribers for %s' % (channel_response['items'][0]['statistics']['subscriberCount'],
                                       channel_response['items'][0]['snippet']['title'])
     return text
 
 
 def getYoutubeChannelTotalViews():
-    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-                    developerKey=YOUTUBE_DEVELOPER_KEY)
-
-    channel_response = youtube.channels().list(
-        part="id,snippet,statistics",
-        id=YOUTUBE_CHANNEL_ID,
-        maxResults=1,
-    ).execute()
-
+    channel_response = getYoutubeChannel()
     text = '%s total views for %s' % (channel_response['items'][0]['statistics']['viewCount'],
                                       channel_response['items'][0]['snippet']['title'])
     return text
@@ -63,3 +56,19 @@ def getFacebookPageLikes():
     page = graph.get_object(id=FACEBOOK_PAGE_ID)
     text = '%s Facebook likes for %s' % (page['likes'], page['name'])
     return text
+
+
+def getAllStats():
+    facebookLikesText = getFacebookPageLikes()
+    videoViewsText = getYoutubeVideoViewCount()
+    channel_response = getYoutubeChannel()
+
+    subsText = '%s subscribers for %s' % (channel_response['items'][0]['statistics']['subscriberCount'],
+                                          channel_response['items'][0]['snippet']['title'])
+
+    channelViewsText = '%s total views for %s' % (channel_response['items'][0]['statistics']['viewCount'],
+                                                  channel_response['items'][0]['snippet']['title'])
+
+    allText = '%s\n%s\n%s\n%s' % (subsText, channelViewsText, facebookLikesText, videoViewsText)
+
+    return allText

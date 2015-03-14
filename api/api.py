@@ -2,7 +2,7 @@ from flask import Flask
 from flask_slack import Slack
 from settings import *
 from utils import getYoutubeVideoViewCount, \
-    getYoutubeChannelSubCount, getYoutubeChannelTotalViews, getFacebookPageLikes
+    getYoutubeChannelSubCount, getYoutubeChannelTotalViews, getFacebookPageLikes, getAllStats
 
 app = Flask(__name__)
 slack = Slack(app)
@@ -29,4 +29,10 @@ def totalViews(**kwargs):
 @slack.command('likes', token=FACEBOOK_SLACK_TOKEN, team_id=SLACK_TEAM_ID, methods=['POST'])
 def facebookLikes(**kwargs):
     text = getFacebookPageLikes()
+    return slack.response(text)
+
+
+@slack.command('stats', token=STATS_SLACK_TOKEN, team_id=SLACK_TEAM_ID, methods=['POST'])
+def stats(**kwargs):
+    text = getAllStats()
     return slack.response(text)
