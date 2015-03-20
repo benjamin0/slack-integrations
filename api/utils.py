@@ -1,4 +1,5 @@
 import facebook
+import twitter
 from apiclient.discovery import build
 from settings import *
 
@@ -58,17 +59,32 @@ def getFacebookPageLikes():
     return text
 
 
+def getTwitterFollowers():
+    api = twitter.Api(consumer_key=TWITTER_CONSUMER_KEY,
+                      consumer_secret=TWITTER_CONSUMER_SECRET,
+                      access_token_key=TWITTER_ACCESS_TOKEN,
+                      access_token_secret=TWITTER_ACCESS_TOKEN_SECRET)
+    userInfo = api.GetUser(screen_name=TWITTER_SCREEN_NAME)
+    twitterText = '%s followers for %s' \
+                  % (userInfo.followers_count, userInfo.name)
+    return twitterText
+
+
 def getAllStats():
     facebookLikesText = getFacebookPageLikes()
     videoViewsText = getYoutubeVideoViewCount()
+    twitterText = getTwitterFollowers()
     channel_response = getYoutubeChannel()
 
-    subsText = '%s subscribers for %s' % (channel_response['items'][0]['statistics']['subscriberCount'],
-                                          channel_response['items'][0]['snippet']['title'])
+    subsText = '%s subscribers for %s' % \
+               (channel_response['items'][0]['statistics']['subscriberCount'],
+                channel_response['items'][0]['snippet']['title'])
 
-    channelViewsText = '%s total views for %s' % (channel_response['items'][0]['statistics']['viewCount'],
-                                                  channel_response['items'][0]['snippet']['title'])
+    channelViewsText = '%s total views for %s' % \
+                       (channel_response['items'][0]['statistics']['viewCount'],
+                        channel_response['items'][0]['snippet']['title'])
 
-    allText = '%s\n%s\n%s\n%s' % (subsText, channelViewsText, facebookLikesText, videoViewsText)
+    allText = '\n'.join([subsText, channelViewsText, facebookLikesText,
+                         twitterText, videoViewsText])
 
     return allText
